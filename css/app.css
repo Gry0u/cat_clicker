@@ -1,3 +1,12 @@
 .picture:hover {
   cursor: pointer;
 }
+
+.header {
+  display: flex;
+}
+
+.cat_button {
+  width: 100%;
+  margin: 1em;
+}
