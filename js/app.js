@@ -1,53 +1,103 @@
-cats = [
-  {name:'Joey', clicks: 0},
-  {name:'Frank', clicks: 0},
-  {name:'Bens', clicks: 0},
-  {name:'Dan', clicks: 0},
-  {name:'Tim', clicks: 0}
-];
+let model = {
+  currentCat: null,
+  cats:[
+    {name:'Joey', clicks: 0, src: 'img/Joey.jpg'},
+    {name:'Frank', clicks: 0, src: 'img/Frank.jpg'},
+    {name:'Bens', clicks: 0, src: 'img/Bens.jpg'},
+    {name:'Dan', clicks: 0, src: 'img/Dan.jpg'},
+    {name:'Tim', clicks: 0, src: 'img/Tim.jpg'}
+  ]
+};
 
-document.body.innerHTML = '';
-//header for buttons
-let header = document.createElement('header');
-header.setAttribute('class', 'header');
-document.body.appendChild(header);
+let game = {
+  init: function() {
+    //set initial cat as first one of the list
+    model.currentCat = model.cats[0];
+    catView.init();
+    catListView.init();
+  },
 
-//container for cat picture and counter div
-let container = document.createElement('div');
-container.setAttribute('class', 'cat_container');
-document.querySelector('body').appendChild(container);
+  increment: function() {
+    model.currentCat.clicks++;
+    catView.render();
+  },
 
-//image
-let img = document.createElement('img');
-img.setAttribute('class', 'picture');
+  getCurrentCat: function() {
+    return model.currentCat;
+  },
 
-//counter
-let counterHTML = document.createElement('div');
-counterHTML.setAttribute('class', 'counter');
+  getCats: function() {
+    return model.cats;
+  },
+  
+  setCurrentCat: function(cat) {
+    model.currentCat = cat;
+  }
+};
 
-container.appendChild(img);
-container.appendChild(counterHTML);
 
+let catView = {
+  init: function() {
+    this.catElem = document.getElementById('cat');
+    this.catNameElem = document.getElementById('cat-name');
+    this.catImageElem = document.getElementById('cat-img');
+    this.countElem = document.getElementById('cat-count');
 
-//loop to add buttons, and event listener
-for (let cat of cats) {
-  //add buttons
-  let button = document.createElement('button');
-  header.appendChild(button);
-  button.innerText = cat.name;
+    //on click on image increment
+    this.catImageElem.addEventListener('click', function() {
+      game.increment();
+    });
 
-  let click_listener = function() {
-    cat.clicks += 1;
-    contentHTML = cat.clicks;
-  };
+    this.render();
+  },
+  render: function() {
+    //update DOM element with values of current cats
+    let currentCat = game.getCurrentCat();
+    this.countElem.textContent = currentCat.clicks;
+    this.catNameElem.textContent = currentCat.name;
+    this.catImageElem.src = currentCat.src;
+  }
+};
 
-  //on button click
-  button.addEventListener('click', function() {
-    //change image
-    img.setAttribute('src', `img/${cat.name}.jpg`);
-    counterHTML.innerText = cat.clicks;
+let catListView = {
+  init: function() {
+    //DOM element
+    this.catListElem = document.getElementById('cat-list');
 
-    //counter event listener
-    img.addEventListener('click', click_listener);
-  });
-}
+    //update DOM element with right values
+    this.render();
+  },
+
+  render: function() {
+    let cat, elem, i;
+    //get cats to render
+    let cats = game.getCats();
+
+    //clean
+    this.catListElem.innerHTML = '';
+
+    //loop to add cats
+    for(i=0; i<cats.length; i++) {
+      cat = cats[i];
+
+      //make cat button and set name
+      elem = document.createElement('button');
+      elem.textContent = cat.name;
+
+      //listen to click: set current cat and display it. closure trick to
+      //link cat variable to the click event function
+      elem.addEventListener('click', (function(catCopy) {
+        return function() {
+          game.setCurrentCat(catCopy);
+          catView.render();
+        };
+      })(cat));
+
+      //add button to HTML
+      this.catListElem.appendChild(elem);
+    }
+  }
+};
+
+//start
+game.init();
