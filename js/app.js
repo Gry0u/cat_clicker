@@ -3,9 +3,9 @@ let model = {
   cats:[
     {name:'Joey', clicks: 0, src: 'img/Joey.jpg'},
     {name:'Frank', clicks: 0, src: 'img/Frank.jpg'},
-    {name:'Bens', clicks: 0, src: 'img/Bens.jpg'},
+    {name:'Twins', clicks: 0, src: 'img/Twins.jpg'},
     {name:'Dan', clicks: 0, src: 'img/Dan.jpg'},
-    {name:'Tim', clicks: 0, src: 'img/Tim.jpg'}
+    {name:'Yuri', clicks: 0, src: 'img/Yuri.jpg'}
   ]
 };
 
@@ -13,8 +13,8 @@ let game = {
   init: function() {
     //set initial cat as first one of the list
     model.currentCat = model.cats[0];
-    catView.init();
     catListView.init();
+    catView.init();
   },
 
   increment: function() {
@@ -29,7 +29,7 @@ let game = {
   getCats: function() {
     return model.cats;
   },
-  
+
   setCurrentCat: function(cat) {
     model.currentCat = cat;
   }
@@ -43,7 +43,7 @@ let catView = {
     this.catImageElem = document.getElementById('cat-img');
     this.countElem = document.getElementById('cat-count');
 
-    //on click on image increment
+    //on click on image, increment
     this.catImageElem.addEventListener('click', function() {
       game.increment();
     });
@@ -69,7 +69,6 @@ let catListView = {
   },
 
   render: function() {
-    let cat, elem, i;
     //get cats to render
     let cats = game.getCats();
 
@@ -77,15 +76,12 @@ let catListView = {
     this.catListElem.innerHTML = '';
 
     //loop to add cats
-    for(i=0; i<cats.length; i++) {
-      cat = cats[i];
-
+    for(let cat of cats) {
       //make cat button and set name
-      elem = document.createElement('button');
+      let elem = document.createElement('button');
       elem.textContent = cat.name;
 
-      //listen to click: set current cat and display it. closure trick to
-      //link cat variable to the click event function
+      /*listen to click: set current cat and display it. closure trick to link cat variable to the click event function*/
       elem.addEventListener('click', (function(catCopy) {
         return function() {
           game.setCurrentCat(catCopy);
