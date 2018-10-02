@@ -55,8 +55,7 @@ let game = {
       name: document.getElementById('name').value,
       clicks: Number(document.getElementById('clicks').value),
       src: document.getElementById('url').value
-    });
-    debugger
+    }); 
     catListView.render();
   }
 };
@@ -107,13 +106,13 @@ let catListView = {
       elem.textContent = cat.name;
 
       /*listen to click: set current cat and display it. closure trick to link cat variable to the click event function*/
-      elem.addEventListener('click', (function(catCopy) {
-        return function() {
-          game.setCurrentCat(catCopy);
-          catView.render();
-        };
-      })(cat));
+      const catButtonClick = function () {
+        game.setCurrentCat(cat);
+        catView.render();
+      }
 
+
+      elem.addEventListener('click', catButtonClick);
       //add button to HTML
       this.catListElem.appendChild(elem);
     }
